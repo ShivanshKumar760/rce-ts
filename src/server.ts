@@ -15,6 +15,8 @@ import { verify } from "node:crypto";
 import { access } from "node:fs";
 import { subscribe } from "node:diagnostics_channel";
 
+dotenv.config();
+
 const execFileAsync = promisify(execFile);
 
 function requireEnv(key:string):string{
@@ -162,7 +164,7 @@ app.post("/execute",requireAuth(),async (req,res)=>{
     try{
         await writeFile(join(dir,"script.js"),code);
         try{
-            const {stdout,stderr}=await execFileAsync(process.execPath,["script,js"],{
+            const {stdout,stderr}=await execFileAsync(process.execPath,["script.js"],{
                 cwd:dir,
                 timeout:5000,
                 maxBuffer:1024*1024,
@@ -202,7 +204,7 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 });
 
 // ------------------------------------------------------------------ start + graceful shutdown
-const server = app.listen(PORT, HOST, () => {
+const server = app.listen(PORT, '127.0.0.1', () => {
   console.log(`API listening on http://${HOST}:${PORT}`);
 });
 
